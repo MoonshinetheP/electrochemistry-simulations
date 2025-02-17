@@ -63,12 +63,15 @@ import time
 import numpy as np
 import waveforms as wf
 import plot as plt
+import capacitance as cap
 
 from mechanism import E, C, Reactions
 from matrices import Matrices
 from solver import Solver
 
 from errno import EEXIST
+from PyQt5.QtWidgets import QApplication
+
 
 
 
@@ -218,11 +221,11 @@ class Diffusive:
                 solved = Solver(k, (self.dT,self.sT), ix, self.mechanism.markers, '1 Dimensional', (self.x,), self.kinetics)
                 pass
                 if len(ix['Oxidised']) != 0:
-                    self.thisflux = np.append(self.thisflux, (self.F * np.pi * self.r * ix['Concentration'] * (ix['Concentration array'][1, k] - ix['Concentration array'][0, k]) / (self.x[1] - self.x[0])))
+                    self.thisflux = np.append(self.thisflux, (self.F * np.pi * self.r * self.mechanism.cmax * self.mechanism.Dmax * (ix['Concentration array'][1, k] - ix['Concentration array'][0, k]) / (self.x[1] - self.x[0])))
                 if len(ix['Reduced']) != 0:
-                    self.thisflux = np.append(self.thisflux, (-self.F * np.pi * self.r * ix['Concentration'] * (ix['Concentration array'][1, k] - ix['Concentration array'][0, k]) / (self.x[1] - self.x[0])))#need to do for dO and DR
+                    self.thisflux = np.append(self.thisflux, (-self.F * np.pi * self.r * self.mechanism.cmax * self.mechanism.Dmax * (ix['Concentration array'][1, k] - ix['Concentration array'][0, k]) / (self.x[1] - self.x[0])))#need to do for dO and DR
             self.flux = np.append(self.flux, np.sum(self.thisflux)) 
-
+        
         self.i = self.flux
 
 
@@ -232,26 +235,25 @@ class Diffusive:
 '''RUNNING THE SIMULATION FROM MAIN'''
 
 if __name__ == '__main__':
-    
-
-    
+        
 
     '''2. DEFINE THE START TIME'''
     start = time.time()
 
-
-    shape = wf.CV(Eini = 0.0, Eupp = 0.5, Elow = 0, dE = 0.001, sr = 0.1, ns = 1)
-    
-    E1 = E((['G'], ['H']), ([1],[1]), ([3],[2]), ([0.000005],[0]), ([5E-6],[5E-6]), E0 = 0.25, k0 = 0.5, a = 0.5)
-    E2 = E((['H'], ['I']), ([1],[1]), ([2],[1]), ([0.00000],[0]), ([5E-6],[5E-6]), E0 = 0.4, k0 = 0.1, a = 0.5)
-    C1 = C((['H'], ['G']), ([1],[1]), ([2],[3]), ([0.00000],[0.00000]), ([5E-6],[5E-6]), k1 = 0.000002)
-    E3 = E((['T'], ['RE']), ([1],[1]), ([2],[3]), ([0.00000],[0]), ([5E-6],[5E-6]), E0 = 0.4, k0 = 0.1, a = 0.5)
+    shape = wf.CV(Eini = 0, Eupp = 0.6, Elow = 0, dE = 0.001, sr = 0.1, ns = 2)
+    #shape = wf.DPV(Eini = 0, Efin = 0.5, dEs = 0.005, dEp = 0.02, pt = 0.05, rt = 0.15, st = 0.001, detailed = False, sampled = False, alpha = 0.5)
+    E1 = E((['G'], ['H']), ([1],[1]), ([0],[1]), ([0.000005],[0]), ([5E-6],[5E-6]), E0 = 0.4, k0 = 0.1, a = 0.5)
+    E2 = E((['I'], ['J']), ([1],[1]), ([1],[0]), ([0],[0]), ([5E-6],[5E-6]), E0 = 0.2, k0 = 0.1, a = 0.5)
+    C1 = C((['H'], ['I']), ([1],[1]), ([1],[1]), ([0],[0]), ([5E-6],[5E-6]), k1 = 0.000001)
 
     '''4. RUN THE SIMULATION'''
-    instance = Diffusive(input = shape, mechanism = Reactions(E1, E2), Nernstian = False, BV = True, MH = False, r = 0.15, expansion = 1.05)
+    instance = Diffusive(input = shape, mechanism = Reactions(E1, C1), Nernstian = False, BV = True, MH = False, r = 0.1, expansion = 1.05)
 
-    plt.Plotter(shape, instance, display = True, save = True)
-    
+    app = QApplication(sys.argv)
+    window = plt.MainWindow(instance)
+    window.show()
+    sys.exit(app.exec_())
+
     filepath = os.getcwd() + '/data/sonata.txt'
     with open(filepath, 'w') as file:
         for ix, iy in zip(instance.E, instance.i):

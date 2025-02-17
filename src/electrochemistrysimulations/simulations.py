@@ -65,11 +65,12 @@ import numpy as np
 import waveforms as wf
 import capacitance as cap
 import noise as noise
-import plot as plt
+import plotcopy as plt
 
 from errno import EEXIST
 from scipy.sparse import diags as diagonals
 from scipy.integrate import solve_ivp as solver
+from PyQt5.QtWidgets import QApplication
 
 
 '''SIMULATION CLASS'''
@@ -893,8 +894,8 @@ if __name__ == '__main__':
 
     '''3. DESCRIBE THE WAVEFORM'''
     '''Sweeps'''
-    shape = wf.LSV(Eini = 0.5, Eupp = 0.5, Elow = 0, dE = -0.001, sr = 0.1, ns = 1)
-    #shape = wf.CV(Eini = 0.5, Eupp = 0.5, Elow = 0, dE = -0.001, sr = 0.1, ns = 1)
+    #shape = wf.LSV(Eini = 0.5, Eupp = 0.5, Elow = 0, dE = -0.001, sr = 0.1, ns = 1)
+    shape = wf.CV(Eini = 0.0, Eupp = 0.5, Elow = 0, dE = 0.001, sr = 0.1, ns = 1)
     
     '''STEPS'''
     #shape = wf.CA(dE = [0], dt = [10], st = 0.001)
@@ -918,6 +919,11 @@ if __name__ == '__main__':
     #right, = axes['B'].plot(instance.E, instance.i, linewidth = 1, linestyle = '-', color = 'red', marker = None, label = None, visible = True)     # plots the oscilloscope data from operations.py on the right-hand subplot
      
     
+    app = QApplication(sys.argv)
+    window = plt.MainWindow(shape, instance)
+    window.show()
+    sys.exit(app.exec_())
+
     '''5. DEFINE THE END TIME'''
     end = time.time()
     print(end-start)

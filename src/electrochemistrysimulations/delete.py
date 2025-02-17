@@ -54,6 +54,12 @@ class Eraser:
                 os.remove(cwd + '/data' + '/' + ix)       # and removes each one
             except:
                 raise       # raises an error just in case something gets in the way
+        
+        for iy in os.listdir(cwd + '/plots'):      # loops through all files in the data directory
+            try:
+                os.remove(cwd + '/plots' + '/' + iy)       # and removes each one
+            except:
+                raise       # raises an error just in case something gets in the way
 
 
 """

@@ -241,7 +241,7 @@ class Diffusive:
                 # Whilst the final element of the array is below the maximum distance, another point is added
 
 
-        self.rh = 0.05
+        self.rh = 0.1
         while self.R[-1] < self.Re / 2:
                 self.R = np.append(self.R, self.R[-1] + self.rh)
                 self.rh *= self.expansion
@@ -287,7 +287,6 @@ class Diffusive:
         self.beta_OR = np.ones(self.l)
         self.gamma_OR = np.ones(self.l - 1)
           
-
         for ix in range(1, self.n - 1):
             try: 
                 self.Zplus = self.Z[ix + 1] - self.Z[ix]
@@ -325,28 +324,22 @@ class Diffusive:
             try:
                 self.gamma_OR[ix] *= 1 * self.dO * self.denominator * ((2/self.Rplus) + (1/self.R[ix]))
             except: pass
+        #probably can make diagonal not square and pop in a  initial term - need to think
             
         
         RZ = diagonals([self.alpha_RZ, self.beta_RZ, self.gamma_RZ], [-1,0,1]).toarray()
-        RZ[0,:] = np.zeros(self.n)        
-        RZ[-1,:] = np.zeros(self.n)
+        RZ[0,:] = np.zeros(self.n)
         RZ[0,0] = 1
-        RZ[-1,-1] = 1
 
         RR = diagonals([self.alpha_RR, self.beta_RR, self.gamma_RR], [-1,0,1]).toarray()
 
 
-
-
         OZ = diagonals([self.alpha_OZ, self.beta_OZ, self.gamma_OZ], [-1,0,1]).toarray()
-        OZ[0,:] = np.zeros(self.n)        
-        OZ[-1,:] = np.zeros(self.n)
+        OZ[0,:] = np.zeros(self.n)
         OZ[0,0] = 1
-        OZ[-1,-1] = 1
 
         OR = diagonals([self.alpha_OR, self.beta_OR, self.gamma_OR], [-1,0,1]).toarray()
 
- 
 
         def reducedZ(t,y):
             return np.dot(RZ,y)
@@ -371,8 +364,7 @@ class Diffusive:
                 self.C_R[column,0, k] = (self.C_R[column,1, k - 1] + self.Z[1] * self.K0 * np.exp(-self.a * self.theta[k - 1]) * (self.C_O[column,1, k - 1] + (self.dR/self.dO) * self.C_R[column,1, k - 1]))/(self.Z[1] * self.K0 * (np.exp((1 - self.a) * self.theta[k - 1]) + (self.dR/self.dO) * np.exp((-self.a) * self.theta[k - 1])) + 1)
                 
                 self.C_O[column,0, k] = (self.C_O[column,1, k - 1] + self.Z[1] * self.K0 * np.exp((1-self.a) * self.theta[k - 1]) * (self.C_O[column,1, k - 1] + (self.dR/self.dO) * self.C_R[column,1, k - 1]))/(self.Z[1] * self.K0 * (np.exp((1 - self.a) * self.theta[k - 1]) + (self.dR/self.dO) * np.exp((-self.a) * self.theta[k - 1])) + 1)
-            if k == 300:
-                pass
+            
             for column in range(0, self.l):    
                 oxidation = solver(reducedZ, [0, self.dT[k - 1]], self.C_R[column,:,k - 1], t_eval=self.sT, method='RK45')
                 self.C_R[column,1:-1, k] = oxidation.y[1:-1, -1]
@@ -414,7 +406,7 @@ if __name__ == '__main__':
     '''3. DESCRIBE THE WAVEFORM'''
     '''Sweeps'''
     #shape = wf.LSV(Eini = 0, Eupp = 0.5, Elow = 0, dE = 0.001, sr = 0.1, ns = 1)
-    shape = wf.CV(Eini = 0, Eupp = 0.5, Elow = 0, dE = 0.001, sr = 0.5, ns = 1)
+    shape = wf.CV(Eini = 0, Eupp = 0.5, Elow = 0, dE = 0.001, sr = 1.0, ns = 1)
     
     '''STEPS'''
     #shape = wf.CA(dE = [0.5], dt = [1], st = 0.001)
