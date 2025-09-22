@@ -85,11 +85,11 @@ start = time.time()
 shape = wf.CV(Eini = 0, Eupp = 0.5, Elow = 0, dE = 0.001, sr = 0.1, ns = 1)
 
 
-data = sim.Diffusive(input = shape, E0 = 0.25, k0 = 0.1, a = 0.5, cR = 0.005, cO = 0.000000, DR = 5E-06, DO = 5E-06, Cd = 0.000020, Ru = 250, Nernstian = False, BV = True, MH = False, electrical = False, shot = False, thermal = False, r = 0.15, expansion = 1.05)
+data = sim.Diffusive(input = shape, E0 = 0.25, k0 = 0.005, a = 0.5, cR = 0.005, cO = 0.000000, DR = 5E-06, DO = 5E-06, Cd = 0.000020, Ru = 250, Nernstian = False, BV = True, MH = False, electrical = False, shot = False, thermal = False, r = 0.15, expansion = 1.05)
 
 
 '''6. VISUALISE THE ANALYSIS'''
-plt.Plotter(shape, data, display = True, save = True)
+plt.Plotter(shape, data)
 
 '''7. SAVE THE DATA'''
 with open(f'{cwd}/data/{time.strftime("%Y-%m-%d %H-%M-%S")} {shape.subtype} waveform.txt', 'w') as file:

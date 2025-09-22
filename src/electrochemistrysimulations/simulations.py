@@ -65,7 +65,7 @@ import numpy as np
 import waveforms as wf
 import capacitance as cap
 import noise as noise
-import plotcopy as plt
+import plot as plt
 
 from errno import EEXIST
 from scipy.sparse import diags as diagonals
@@ -911,8 +911,8 @@ if __name__ == '__main__':
     
 
     '''4. RUN THE SIMULATION'''
-    #instance = Diffusive(input = shape, E0 = 0.25, k0 = 0.1, a = 0.5, cR = 0.00, cO = 0.0000005, DR = 5E-06, DO = 5E-06, Cd = 0.000020, Ru = 250, Nernstian = False, BV = True, MH = False, electrical = False, shot = False, thermal = False, r = 0.15, expansion = 1.05)
-    instance = Adsorbed(input = shape, E0 = 0.25, k0 = 1, a = 0.5, SC = 10E-10, Nernstian = True, BV = False, r = 0.15)
+    instance = Diffusive(input = shape, E0 = 0.25, k0 = 0.0005, a = 0.5, cR = 0.00, cO = 0.0000005, DR = 5E-06, DO = 5E-06, Cd = 0.000000, Ru = 00, Nernstian = False, BV = True, MH = False, electrical = False, shot = False, thermal = False, r = 0.15, expansion = 1.05)
+    #instance = Adsorbed(input = shape, E0 = 0.25, k0 = 1, a = 0.5, SC = 10E-10, Nernstian = True, BV = False, r = 0.15)
 
     #fig, axes = plt.subplot_mosaic((['A','B'],['C','C'],['D', 'D']), figsize=(12, 15))        # defines a matplotlib figure with two horizontally arranged subplots
     #left, = axes['A'].plot(shape.tWF, shape.EWF, linewidth = 1, linestyle = '-', color = 'blue', marker = None, label = None, visible = True)       # plots the potential waveform from waveforms.py on the left-hand subplot

@@ -240,14 +240,14 @@ if __name__ == '__main__':
     '''2. DEFINE THE START TIME'''
     start = time.time()
 
-    shape = wf.CV(Eini = 0, Eupp = 0.6, Elow = 0, dE = 0.001, sr = 0.1, ns = 2)
+    shape = wf.CV(Eini = 0, Eupp = 0.6, Elow = 0, dE = 0.001, sr = 0.01, ns = 1)
     #shape = wf.DPV(Eini = 0, Efin = 0.5, dEs = 0.005, dEp = 0.02, pt = 0.05, rt = 0.15, st = 0.001, detailed = False, sampled = False, alpha = 0.5)
-    E1 = E((['G'], ['H']), ([1],[1]), ([0],[1]), ([0.000005],[0]), ([5E-6],[5E-6]), E0 = 0.4, k0 = 0.1, a = 0.5)
-    E2 = E((['I'], ['J']), ([1],[1]), ([1],[0]), ([0],[0]), ([5E-6],[5E-6]), E0 = 0.2, k0 = 0.1, a = 0.5)
-    C1 = C((['H'], ['I']), ([1],[1]), ([1],[1]), ([0],[0]), ([5E-6],[5E-6]), k1 = 0.000001)
+    E1 = E((['G'], ['H']), ([1],[1]), ([0],[1]), ([0.000005],[0]), ([5E-6],[5E-6]), E0 = 0.3, k0 = 0.0005, a = 0.5)
+    #E2 = E((['I'], ['J']), ([1],[1]), ([1],[0]), ([0],[0]), ([5E-6],[5E-6]), E0 = 0.2, k0 = 0.1, a = 0.5)
+    #C1 = C((['H'], ['I']), ([1],[1]), ([1],[1]), ([0],[0]), ([5E-6],[5E-6]), k1 = 0.000001)
 
     '''4. RUN THE SIMULATION'''
-    instance = Diffusive(input = shape, mechanism = Reactions(E1, C1), Nernstian = False, BV = True, MH = False, r = 0.1, expansion = 1.05)
+    instance = Diffusive(input = shape, mechanism = Reactions(E1), Nernstian = False, BV = True, MH = False, r = 0.1, expansion = 1.05)
 
     app = QApplication(sys.argv)
     window = plt.MainWindow(instance)
@@ -258,6 +258,7 @@ if __name__ == '__main__':
     with open(filepath, 'w') as file:
         for ix, iy in zip(instance.E, instance.i):
             file.write(str(ix) + ',' + str(iy) + '\n')
+            
     '''5. DEFINE THE END TIME'''
     end = time.time()
     print(end-start)
