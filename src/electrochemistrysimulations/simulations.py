@@ -70,7 +70,7 @@ import plot as plt
 from errno import EEXIST
 from scipy.sparse import diags as diagonals
 from scipy.integrate import solve_ivp as solver
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
 
 '''SIMULATION CLASS'''
